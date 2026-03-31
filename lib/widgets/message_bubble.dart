@@ -28,7 +28,7 @@ class MessageBubble extends StatelessWidget {
     return FadeInUp(
       duration: const Duration(milliseconds: 200),
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 16),
+        padding: const EdgeInsets.only(bottom: 20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,36 +36,25 @@ class MessageBubble extends StatelessWidget {
             Flexible(
               child: ConstrainedBox(
                 constraints: BoxConstraints(
-                  maxWidth: MediaQuery.of(context).size.width * 0.5,
+                  maxWidth: MediaQuery.of(context).size.width * 0.6,
                 ),
                 child: Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF0066FF),
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(16),
-                      topRight: Radius.circular(16),
-                      bottomLeft: Radius.circular(16),
-                      bottomRight: Radius.circular(4),
-                    ),
+                    color: const Color(0xFF0A0A0A),
+                    border: Border.all(color: const Color(0xFF1A1A1A)),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
                     message.content,
-                    style: const TextStyle(color: Colors.white, fontSize: 14),
+                    style: const TextStyle(
+                      color: Color(0xFFEDEDED),
+                      fontSize: 14,
+                      letterSpacing: -0.2,
+                      height: 1.5,
+                    ),
                   ),
                 ),
-              ),
-            ),
-            const SizedBox(width: 8),
-            Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                color: const Color(0xFF0066FF).withValues(alpha: 0.2),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Center(
-                child: Text('👤', style: TextStyle(fontSize: 16)),
               ),
             ),
           ],
@@ -78,89 +67,103 @@ class MessageBubble extends StatelessWidget {
     return FadeInUp(
       duration: const Duration(milliseconds: 200),
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 16),
+        padding: const EdgeInsets.only(bottom: 20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                color: const Color(0xFF0066FF).withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Center(
-                child: Text('🤖', style: TextStyle(fontSize: 16)),
-              ),
-            ),
-            const SizedBox(width: 8),
             Flexible(
               child: ConstrainedBox(
                 constraints: BoxConstraints(
-                  maxWidth: MediaQuery.of(context).size.width * 0.5,
+                  maxWidth: MediaQuery.of(context).size.width * 0.6,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (message.isToolCall == true && message.toolName != null)
                       Container(
-                        margin: const EdgeInsets.only(bottom: 6),
+                        margin: const EdgeInsets.only(bottom: 8),
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 4),
+                            horizontal: 10, vertical: 6),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF0066FF).withValues(alpha: 0.15),
+                          color: const Color(0xFF0A0A0A),
+                          border: Border.all(color: const Color(0xFF1A1A1A)),
                           borderRadius: BorderRadius.circular(6),
                         ),
-                        child: Text(
-                          '🔧 Used ${message.toolName}',
-                          style: const TextStyle(
-                            color: Color(0xFF0066FF),
-                            fontSize: 11,
-                          ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.build_circle_outlined,
+                              size: 14,
+                              color: Color(0xFF666666),
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              message.toolName!,
+                              style: const TextStyle(
+                                color: Color(0xFF666666),
+                                fontSize: 12,
+                                letterSpacing: -0.2,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     Container(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF1A1A2E),
-                        border: Border.all(color: const Color(0xFF2A2A4A)),
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(4),
-                          topRight: Radius.circular(16),
-                          bottomLeft: Radius.circular(16),
-                          bottomRight: Radius.circular(16),
-                        ),
+                        color: const Color(0xFF0A0A0A),
+                        border: Border.all(color: const Color(0xFF1A1A1A)),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       child: MarkdownBody(
                         data: message.content,
                         styleSheet: MarkdownStyleSheet(
                           p: const TextStyle(
-                              color: Color(0xFFE0E0E0), fontSize: 14),
+                            color: Color(0xFFEDEDED),
+                            fontSize: 14,
+                            letterSpacing: -0.2,
+                            height: 1.5,
+                          ),
                           h1: const TextStyle(
-                              color: Colors.white, fontSize: 20),
+                            color: Color(0xFFFFFFFF),
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: -0.4,
+                          ),
                           h2: const TextStyle(
-                              color: Colors.white, fontSize: 18),
+                            color: Color(0xFFFFFFFF),
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: -0.3,
+                          ),
                           h3: const TextStyle(
-                              color: Colors.white, fontSize: 16),
+                            color: Color(0xFFFFFFFF),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: -0.3,
+                          ),
                           code: const TextStyle(
-                            color: Color(0xFF00C853),
-                            backgroundColor: Color(0xFF12122A),
+                            color: Color(0xFFEDEDED),
+                            backgroundColor: Color(0xFF000000),
                             fontSize: 13,
+                            fontFamily: 'monospace',
                           ),
                           codeblockDecoration: BoxDecoration(
-                            color: const Color(0xFF12122A),
+                            color: const Color(0xFF000000),
+                            border: Border.all(color: const Color(0xFF1A1A1A)),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           listBullet: const TextStyle(
-                              color: Color(0xFFE0E0E0)),
+                              color: Color(0xFFEDEDED)),
                           strong: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold),
+                              color: Color(0xFFFFFFFF),
+                              fontWeight: FontWeight.w600),
                           em: const TextStyle(
-                              color: Color(0xFFE0E0E0),
+                              color: Color(0xFFEDEDED),
                               fontStyle: FontStyle.italic),
-                          a: const TextStyle(color: Color(0xFF0066FF)),
+                          a: const TextStyle(color: Color(0xFF3291FF)),
                         ),
                       ),
                     ),
@@ -178,20 +181,21 @@ class MessageBubble extends StatelessWidget {
     return FadeInUp(
       duration: const Duration(milliseconds: 200),
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 16),
+        padding: const EdgeInsets.only(bottom: 20),
         child: Center(
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             decoration: BoxDecoration(
-              color: const Color(0xFF1A1A2E).withValues(alpha: 0.7),
-              borderRadius: BorderRadius.circular(12),
+              color: const Color(0xFF0A0A0A),
+              border: Border.all(color: const Color(0xFF1A1A1A)),
+              borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
               message.content,
               style: const TextStyle(
-                color: Colors.grey,
+                color: Color(0xFF666666),
                 fontSize: 12,
-                fontStyle: FontStyle.italic,
+                letterSpacing: -0.2,
               ),
             ),
           ),
@@ -204,40 +208,44 @@ class MessageBubble extends StatelessWidget {
     return FadeInUp(
       duration: const Duration(milliseconds: 200),
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 16),
+        padding: const EdgeInsets.only(bottom: 20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                color: const Color(0xFFFF5252).withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Center(
-                child: Text('❌', style: TextStyle(fontSize: 16)),
-              ),
-            ),
-            const SizedBox(width: 8),
             Flexible(
               child: ConstrainedBox(
                 constraints: BoxConstraints(
-                  maxWidth: MediaQuery.of(context).size.width * 0.5,
+                  maxWidth: MediaQuery.of(context).size.width * 0.6,
                 ),
                 child: Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF2E1A1A),
-                    border: Border.all(
-                        color: const Color(0xFFFF5252).withValues(alpha: 0.3)),
-                    borderRadius: BorderRadius.circular(16),
+                    color: const Color(0xFF1A0A0A),
+                    border: Border.all(color: const Color(0xFF3A1A1A)),
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Text(
-                    message.content,
-                    style:
-                        const TextStyle(color: Color(0xFFFF8A80), fontSize: 14),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Icon(
+                        Icons.error_outline,
+                        color: Color(0xFFFF6B6B),
+                        size: 18,
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          message.content,
+                          style: const TextStyle(
+                            color: Color(0xFFFFAAAA),
+                            fontSize: 14,
+                            letterSpacing: -0.2,
+                            height: 1.5,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),

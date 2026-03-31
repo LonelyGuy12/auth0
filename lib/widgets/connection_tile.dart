@@ -16,58 +16,50 @@ class ConnectionTile extends StatelessWidget {
     Color bgColor;
     Color borderColor;
     if (isConnected) {
-      bgColor = const Color(0xFF0A2E1A);
-      borderColor = const Color(0xFF00C853);
+      bgColor = const Color(0xFF0A0A0A);
+      borderColor = const Color(0xFF00D66F);
     } else if (isConnecting) {
-      bgColor = const Color(0xFF16213E);
+      bgColor = const Color(0xFF0A0A0A);
       borderColor = const Color(0xFFFFA726);
     } else {
-      bgColor = const Color(0xFF16213E);
-      borderColor = const Color(0xFF2A2A4A);
+      bgColor = const Color(0xFF0A0A0A);
+      borderColor = const Color(0xFF1A1A1A);
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(8),
           onTap: isConnecting
               ? null
               : () => _handleTap(context),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 300),
-            padding: const EdgeInsets.all(14),
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: bgColor,
               border: Border.all(color: borderColor, width: 1),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(8),
             ),
             child: Row(
               children: [
                 // Status dot
                 Container(
-                  width: 8,
-                  height: 8,
+                  width: 6,
+                  height: 6,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: isConnected
-                        ? const Color(0xFF00C853)
+                        ? const Color(0xFF00D66F)
                         : isConnecting
                             ? const Color(0xFFFFA726)
-                            : Colors.grey,
-                    boxShadow: isConnected
-                        ? [
-                            BoxShadow(
-                              color: const Color(0xFF00C853).withValues(alpha: 0.5),
-                              blurRadius: 6,
-                            ),
-                          ]
-                        : null,
+                            : const Color(0xFF666666),
                   ),
                 ),
-                const SizedBox(width: 12),
-                Text(connection.emoji, style: const TextStyle(fontSize: 18)),
+                const SizedBox(width: 10),
+                Text(connection.emoji, style: const TextStyle(fontSize: 16)),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Column(
@@ -76,9 +68,10 @@ class ConnectionTile extends StatelessWidget {
                       Text(
                         connection.displayName,
                         style: const TextStyle(
-                          color: Colors.white,
+                          color: Color(0xFFEDEDED),
                           fontSize: 13,
                           fontWeight: FontWeight.w500,
+                          letterSpacing: -0.2,
                         ),
                       ),
                       const SizedBox(height: 2),
@@ -90,9 +83,10 @@ class ConnectionTile extends StatelessWidget {
                                 : connection.description,
                         style: TextStyle(
                           color: isConnected
-                              ? const Color(0xFF00C853)
-                              : Colors.grey,
-                          fontSize: 10,
+                              ? const Color(0xFF00D66F)
+                              : const Color(0xFF666666),
+                          fontSize: 11,
+                          letterSpacing: -0.2,
                         ),
                       ),
                     ],
@@ -105,9 +99,9 @@ class ConnectionTile extends StatelessWidget {
                           ? Icons.hourglass_top
                           : Icons.add_circle_outline,
                   color: isConnected
-                      ? const Color(0xFF00C853)
-                      : Colors.grey,
-                  size: 18,
+                      ? const Color(0xFF00D66F)
+                      : const Color(0xFF666666),
+                  size: 16,
                 ),
               ],
             ),
@@ -124,23 +118,43 @@ class ConnectionTile extends StatelessWidget {
       showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
-          backgroundColor: const Color(0xFF1A1A2E),
-          title: const Text('Disconnect', style: TextStyle(color: Colors.white)),
+          backgroundColor: const Color(0xFF0A0A0A),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+            side: const BorderSide(color: Color(0xFF1A1A1A)),
+          ),
+          title: const Text(
+            'Disconnect',
+            style: TextStyle(
+              color: Color(0xFFFFFFFF),
+              fontWeight: FontWeight.w600,
+              letterSpacing: -0.3,
+            ),
+          ),
           content: Text(
             'Disconnect ${connection.displayName}?',
-            style: const TextStyle(color: Colors.white70),
+            style: const TextStyle(
+              color: Color(0xFFEDEDED),
+              letterSpacing: -0.2,
+            ),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: const Text('Cancel'),
+              child: const Text(
+                'Cancel',
+                style: TextStyle(color: Color(0xFF666666)),
+              ),
             ),
             TextButton(
               onPressed: () {
                 auth.disconnect(connection.type);
                 Navigator.pop(ctx);
               },
-              child: const Text('Disconnect', style: TextStyle(color: Colors.red)),
+              child: const Text(
+                'Disconnect',
+                style: TextStyle(color: Color(0xFFFF6B6B)),
+              ),
             ),
           ],
         ),

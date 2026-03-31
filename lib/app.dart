@@ -12,13 +12,19 @@ class AiAgentApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.dark,
-        scaffoldBackgroundColor: const Color(0xFF0F0F23),
-        primaryColor: const Color(0xFF0066FF),
+        scaffoldBackgroundColor: const Color(0xFF000000),
+        primaryColor: const Color(0xFFFFFFFF),
         colorScheme: const ColorScheme.dark(
-          primary: Color(0xFF0066FF),
-          surface: Color(0xFF1A1A2E),
+          primary: Color(0xFFFFFFFF),
+          surface: Color(0xFF0A0A0A),
+          secondary: Color(0xFF3291FF),
         ),
-        textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme),
+        textTheme: GoogleFonts.interTextTheme(
+          ThemeData.dark().textTheme.apply(
+            bodyColor: const Color(0xFFEDEDED),
+            displayColor: const Color(0xFFFFFFFF),
+          ),
+        ),
       ),
       home: const HomeScreen(),
     );

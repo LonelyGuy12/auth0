@@ -35,14 +35,15 @@ class _ChatInputState extends State<ChatInput> {
       builder: (context, chat, _) {
         final isLoading = chat.isLoading;
         return Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
           decoration: const BoxDecoration(
-            color: Color(0xFF12122A),
+            color: Color(0xFF000000),
             border: Border(
-              top: BorderSide(color: Color(0xFF2A2A4A), width: 1),
+              top: BorderSide(color: Color(0xFF1A1A1A), width: 1),
             ),
           ),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Expanded(
                 child: KeyboardListener(
@@ -58,65 +59,53 @@ class _ChatInputState extends State<ChatInput> {
                     controller: _controller,
                     focusNode: _focusNode,
                     enabled: !isLoading,
-                    maxLines: 4,
+                    maxLines: 5,
                     minLines: 1,
-                    style: const TextStyle(color: Colors.white, fontSize: 14),
+                    style: const TextStyle(
+                      color: Color(0xFFEDEDED),
+                      fontSize: 14,
+                      letterSpacing: -0.2,
+                    ),
                     decoration: InputDecoration(
-                      hintText: isLoading ? 'Thinking...' : 'Ask me anything...',
-                      hintStyle: const TextStyle(color: Color(0xFF888888)),
+                      hintText: isLoading ? 'Thinking...' : 'Send a message...',
+                      hintStyle: const TextStyle(color: Color(0xFF666666)),
                       filled: true,
-                      fillColor: const Color(0xFF1A1A2E),
+                      fillColor: const Color(0xFF000000),
                       contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 12),
+                          horizontal: 16, vertical: 14),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(8),
                         borderSide:
-                            const BorderSide(color: Color(0xFF2A2A4A)),
+                            const BorderSide(color: Color(0xFF1A1A1A)),
                       ),
                       enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(8),
                         borderSide:
-                            const BorderSide(color: Color(0xFF2A2A4A)),
+                            const BorderSide(color: Color(0xFF1A1A1A)),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(8),
                         borderSide:
-                            const BorderSide(color: Color(0xFF0066FF)),
+                            const BorderSide(color: Color(0xFF666666)),
                       ),
                     ),
                   ),
                 ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 12),
               Material(
-                color: isLoading ? Colors.grey : const Color(0xFF0066FF),
-                borderRadius: BorderRadius.circular(12),
+                color: isLoading ? const Color(0xFF1A1A1A) : const Color(0xFFFFFFFF),
+                borderRadius: BorderRadius.circular(8),
                 child: InkWell(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(8),
                   onTap: isLoading ? null : _send,
                   child: Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 12),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          isLoading
-                              ? Icons.hourglass_top
-                              : Icons.send_rounded,
-                          color: Colors.white,
-                          size: 18,
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          isLoading ? 'Wait' : 'Send',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 13,
-                          ),
-                        ),
-                      ],
+                        horizontal: 20, vertical: 14),
+                    child: Icon(
+                      Icons.arrow_upward,
+                      color: isLoading ? const Color(0xFF666666) : Colors.black,
+                      size: 18,
                     ),
                   ),
                 ),

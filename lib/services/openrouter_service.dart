@@ -84,6 +84,203 @@ class OpenRouterService {
         },
       },
     },
+    {
+      'type': 'function',
+      'function': {
+        'name': 'get_emails',
+        'description': "Gets the user's latest Gmail emails",
+        'parameters': {
+          'type': 'object',
+          'properties': {
+            'maxResults': {
+              'type': 'integer',
+              'description': 'Maximum number of emails to return (default 5)',
+            },
+          },
+          'required': [],
+        },
+      },
+    },
+    {
+      'type': 'function',
+      'function': {
+        'name': 'search_emails',
+        'description': 'Searches Gmail for emails matching a query (uses Gmail search syntax)',
+        'parameters': {
+          'type': 'object',
+          'properties': {
+            'query': {
+              'type': 'string',
+              'description': 'Gmail search query (e.g. "from:john", "subject:invoice", "is:unread")',
+            },
+            'maxResults': {
+              'type': 'integer',
+              'description': 'Maximum number of results (default 5)',
+            },
+          },
+          'required': ['query'],
+        },
+      },
+    },
+    {
+      'type': 'function',
+      'function': {
+        'name': 'send_email',
+        'description': 'Sends an email via Gmail on behalf of the user',
+        'parameters': {
+          'type': 'object',
+          'properties': {
+            'to': {
+              'type': 'string',
+              'description': 'Recipient email address',
+            },
+            'subject': {
+              'type': 'string',
+              'description': 'Email subject line',
+            },
+            'body': {
+              'type': 'string',
+              'description': 'Plain text body of the email',
+            },
+          },
+          'required': ['to', 'subject', 'body'],
+        },
+      },
+    },
+    {
+      'type': 'function',
+      'function': {
+        'name': 'get_youtube_channel',
+        'description': "Gets the user's YouTube channel info and statistics",
+        'parameters': {
+          'type': 'object',
+          'properties': {},
+          'required': [],
+        },
+      },
+    },
+    {
+      'type': 'function',
+      'function': {
+        'name': 'get_youtube_videos',
+        'description': "Gets the user's uploaded YouTube videos",
+        'parameters': {
+          'type': 'object',
+          'properties': {
+            'maxResults': {
+              'type': 'integer',
+              'description': 'Maximum number of videos to return (default 5)',
+            },
+          },
+          'required': [],
+        },
+      },
+    },
+    {
+      'type': 'function',
+      'function': {
+        'name': 'search_youtube',
+        'description': 'Searches YouTube for videos matching a query',
+        'parameters': {
+          'type': 'object',
+          'properties': {
+            'query': {
+              'type': 'string',
+              'description': 'Search query for YouTube videos',
+            },
+            'maxResults': {
+              'type': 'integer',
+              'description': 'Maximum number of results (default 5)',
+            },
+          },
+          'required': ['query'],
+        },
+      },
+    },
+    {
+      'type': 'function',
+      'function': {
+        'name': 'get_contacts',
+        'description': "Gets the user's Google contacts",
+        'parameters': {
+          'type': 'object',
+          'properties': {
+            'maxResults': {
+              'type': 'integer',
+              'description': 'Maximum number of contacts to return (default 10)',
+            },
+          },
+          'required': [],
+        },
+      },
+    },
+    {
+      'type': 'function',
+      'function': {
+        'name': 'search_contacts',
+        'description': 'Searches Google contacts by name or email',
+        'parameters': {
+          'type': 'object',
+          'properties': {
+            'query': {
+              'type': 'string',
+              'description': 'Name or email to search for',
+            },
+          },
+          'required': ['query'],
+        },
+      },
+    },
+    {
+      'type': 'function',
+      'function': {
+        'name': 'list_drive_files',
+        'description': "Lists files in the user's Google Drive",
+        'parameters': {
+          'type': 'object',
+          'properties': {
+            'maxResults': {
+              'type': 'integer',
+              'description': 'Maximum number of files to return (default 10)',
+            },
+          },
+          'required': [],
+        },
+      },
+    },
+    {
+      'type': 'function',
+      'function': {
+        'name': 'search_drive',
+        'description': 'Searches Google Drive for files by name',
+        'parameters': {
+          'type': 'object',
+          'properties': {
+            'query': {
+              'type': 'string',
+              'description': 'File name or keyword to search for',
+            },
+            'maxResults': {
+              'type': 'integer',
+              'description': 'Maximum number of results (default 10)',
+            },
+          },
+          'required': ['query'],
+        },
+      },
+    },
+    {
+      'type': 'function',
+      'function': {
+        'name': 'get_drive_storage',
+        'description': "Gets the user's Google Drive storage quota usage",
+        'parameters': {
+          'type': 'object',
+          'properties': {},
+          'required': [],
+        },
+      },
+    },
   ];
 
   Future<Map<String, dynamic>> _callApi(
@@ -137,6 +334,10 @@ Current date and time: $now
 You can help users with:
 - Google Calendar: View and create calendar events
 - GitHub: View repositories and profile information
+- Gmail: Read, search, and send emails
+- YouTube: View channel info, your videos, and search YouTube
+- Google Contacts: View and search contacts
+- Google Drive: List, search files and check storage
 
 When using tools, be concise and format results nicely using markdown.
 If a service is not connected, tell the user to connect it in the sidebar.

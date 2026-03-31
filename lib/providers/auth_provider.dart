@@ -1,21 +1,30 @@
 import 'package:flutter/material.dart';
 import '../models/service_connection.dart';
 import '../services/auth_service.dart';
+import '../services/token_vault_service.dart';
 
 class AuthProvider extends ChangeNotifier {
   final AuthService _authService = AuthService();
+  final TokenVaultService _tokenVault = TokenVaultService();
   final List<ServiceConnection> connections =
       ServiceConnection.getDefaultConnections();
 
   AuthProvider() {
-    _checkAllConnections();
+    _checkAndRepairConnections();
   }
 
-  Future<void> _checkAllConnections() async {
+  Future<void> _checkAndRepairConnections() async {
     for (final conn in connections) {
       conn.isConnected = await _authService.isConnected(conn.type.name);
     }
     notifyListeners();
+
+    // Auto-repair: re-fetch IdP tokens for connected services
+    for (final conn in connections) {
+      if (conn.isConnected) {
+        await _tokenVault.repairConnection(conn.type.name);
+      }
+    }
   }
 
   Future<bool> connect(ServiceType type) async {

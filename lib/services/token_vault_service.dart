@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import '../config/constants.dart';
@@ -14,7 +15,7 @@ class TokenVaultService {
     'google': {
       'connection': 'google-oauth2',
       'scopes':
-          'https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/gmail.readonly',
+          'https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/contacts.readonly https://www.googleapis.com/auth/drive.readonly',
     },
     'github': {
       'connection': 'github',
@@ -76,7 +77,10 @@ class TokenVaultService {
       }),
     );
 
-    if (response.statusCode != 200) return null;
+    if (response.statusCode != 200) {
+      debugPrint('[TokenVault] Management API token failed: ${response.statusCode} ${response.body}');
+      return null;
+    }
     final data = jsonDecode(response.body) as Map<String, dynamic>;
     return data['access_token'] as String?;
   }
@@ -97,19 +101,25 @@ class TokenVaultService {
       'Authorization': 'Bearer $managementToken',
     });
 
-    if (response.statusCode != 200) return null;
+    if (response.statusCode != 200) {
+      debugPrint('[TokenVault] Fetch user identities failed: ${response.statusCode} ${response.body}');
+      return null;
+    }
 
     final userData = jsonDecode(response.body) as Map<String, dynamic>;
     final identities = userData['identities'] as List<dynamic>?;
+    debugPrint('[TokenVault] Identities found: ${identities?.length ?? 0}');
     if (identities == null) return null;
 
     final connection = config['connection'];
     for (final identity in identities) {
       final id = identity as Map<String, dynamic>;
+      debugPrint('[TokenVault] Identity: connection=${id['connection']}, has_token=${id['access_token'] != null}');
       if (id['connection'] == connection && id['access_token'] != null) {
         return id['access_token'] as String;
       }
     }
+    debugPrint('[TokenVault] No matching identity found for connection: $connection');
     return null;
   }
 
@@ -261,5 +271,77 @@ class TokenVaultService {
       'expires_at': expiresAt,
       'is_expired': DateTime.now().millisecondsSinceEpoch >= expiresAt,
     };
+  }
+
+  /// Repair an existing connection by re-fetching the IdP token.
+  /// Uses the stored refresh token to get a fresh id_token with user_id,
+  /// then fetches the real provider token from the Management API.
+  Future<bool> repairConnection(String service) async {
+    final refreshToken =
+        await _storage.read(key: '${service}_refresh_token');
+    if (refreshToken == null) {
+      debugPrint('[Repair] No refresh token for $service');
+      return false;
+    }
+
+    try {
+      final domain = AppConstants.auth0Domain;
+
+      // Step 1: Use refresh token to get a fresh id_token (contains user_id)
+      final refreshUrl = Uri.parse('https://$domain/oauth/token');
+      final refreshResp = await http.post(
+        refreshUrl,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'grant_type': 'refresh_token',
+          'client_id': AppConstants.auth0ClientId,
+          'client_secret': AppConstants.auth0ClientSecret,
+          'refresh_token': refreshToken,
+        }),
+      );
+
+      if (refreshResp.statusCode != 200) {
+        debugPrint('[Repair] Refresh token exchange failed: ${refreshResp.statusCode}');
+        return false;
+      }
+
+      final tokens = jsonDecode(refreshResp.body) as Map<String, dynamic>;
+      final idToken = tokens['id_token'] as String?;
+      String? userId = await _storage.read(key: '${service}_user_id');
+
+      if (userId == null && idToken != null) {
+        userId = decodeIdTokenSub(idToken);
+        debugPrint('[Repair] Decoded userId from id_token: $userId');
+      }
+
+      if (userId == null) {
+        debugPrint('[Repair] Could not determine userId for $service');
+        return false;
+      }
+
+      // Step 2: Get Management API token via client_credentials
+      final ccToken = await getManagementApiToken();
+      if (ccToken == null) {
+        debugPrint('[Repair] Could not get Management API token');
+        return false;
+      }
+
+      // Step 3: Fetch the real IdP token
+      final idpToken = await fetchIdpToken(service, ccToken, userId);
+      if (idpToken == null) {
+        debugPrint('[Repair] Could not fetch IdP token for $service');
+        return false;
+      }
+
+      // Step 4: Store everything properly
+      tokens['idp_access_token'] = idpToken;
+      tokens['user_id'] = userId;
+      await storeTokens(service, tokens);
+      debugPrint('[Repair] Successfully repaired $service connection!');
+      return true;
+    } catch (e) {
+      debugPrint('[Repair] Error repairing $service: $e');
+      return false;
+    }
   }
 }

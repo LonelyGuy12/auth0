@@ -10,8 +10,8 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       body: Row(
         children: [
-          const SizedBox(width: 300, child: Sidebar()),
-          Container(width: 1, color: const Color(0xFF2A2A4A)),
+          const SizedBox(width: 280, child: Sidebar()),
+          Container(width: 1, color: const Color(0xFF1A1A1A)),
           const Expanded(child: ChatArea()),
         ],
       ),

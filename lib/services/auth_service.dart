@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'token_vault_service.dart';
 
@@ -85,28 +86,26 @@ class AuthService {
 
       // Fetch the actual identity provider token from Auth0 Management API
       final idToken = tokens['id_token'] as String?;
+      debugPrint('[Auth] id_token present: ${idToken != null}');
       if (idToken != null) {
         final userId = _tokenVault.decodeIdTokenSub(idToken);
+        debugPrint('[Auth] Decoded userId: $userId');
         if (userId != null) {
           tokens['user_id'] = userId;
-          // The access_token is a Management API token (audience was /api/v2/)
-          // Use it to fetch the real identity provider access token
+          // Use client_credentials to get a Management API token
+          // (the authorization code token may not have the right scopes)
+          final ccToken = await _tokenVault.getManagementApiToken();
+          debugPrint('[Auth] Management API token obtained: ${ccToken != null}');
           String? idpToken;
-          final mgmtToken = tokens['access_token'] as String?;
-          if (mgmtToken != null) {
+          if (ccToken != null) {
             idpToken =
-                await _tokenVault.fetchIdpToken(service, mgmtToken, userId);
-          }
-          // Fallback: try client_credentials grant for Management API
-          if (idpToken == null) {
-            final ccToken = await _tokenVault.getManagementApiToken();
-            if (ccToken != null) {
-              idpToken =
-                  await _tokenVault.fetchIdpToken(service, ccToken, userId);
-            }
+                await _tokenVault.fetchIdpToken(service, ccToken, userId);
+            debugPrint('[Auth] IdP token fetched: ${idpToken != null}');
           }
           if (idpToken != null) {
             tokens['idp_access_token'] = idpToken;
+          } else {
+            debugPrint('[Auth] WARNING: Could not fetch IdP token for $service');
           }
         }
       }

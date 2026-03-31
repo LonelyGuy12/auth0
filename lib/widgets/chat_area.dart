@@ -15,31 +15,34 @@ class ChatArea extends StatelessWidget {
       children: [
         // Header
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           decoration: const BoxDecoration(
-            color: Color(0xFF12122A),
+            color: Color(0xFF000000),
             border: Border(
-              bottom: BorderSide(color: Color(0xFF2A2A4A), width: 1),
+              bottom: BorderSide(color: Color(0xFF1A1A1A), width: 1),
             ),
           ),
           child: Row(
             children: [
               const Text(
-                '💬 Chat',
+                'Chat',
                 style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
+                  color: Color(0xFFFFFFFF),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: -0.3,
                 ),
               ),
               const Spacer(),
               const ModelSelector(),
-              const SizedBox(width: 8),
+              const SizedBox(width: 12),
               Consumer<ChatProvider>(
                 builder: (context, chat, _) => IconButton(
-                  icon: const Icon(Icons.delete_outline, color: Colors.grey, size: 20),
+                  icon: const Icon(Icons.refresh, color: Color(0xFF666666), size: 18),
                   tooltip: 'Clear chat',
                   onPressed: chat.clearChat,
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
                 ),
               ),
             ],
@@ -54,7 +57,7 @@ class ChatArea extends StatelessWidget {
                   chat.messages.length + (chat.isLoading ? 1 : 0);
               return ListView.builder(
                 controller: chat.scrollController,
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(24),
                 itemCount: itemCount,
                 itemBuilder: (context, index) {
                   if (index >= chat.messages.length) {

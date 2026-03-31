@@ -20,25 +20,32 @@ class ModelSelector extends StatelessWidget {
     return Consumer<ChatProvider>(
       builder: (context, chat, _) {
         return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: const Color(0xFF16213E),
-            border: Border.all(color: const Color(0xFF2A2A4A)),
-            borderRadius: BorderRadius.circular(8),
+            color: const Color(0xFF0A0A0A),
+            border: Border.all(color: const Color(0xFF1A1A1A)),
+            borderRadius: BorderRadius.circular(6),
           ),
           child: DropdownButtonHideUnderline(
             child: DropdownButton<String>(
               value: models.any((m) => m['id'] == chat.currentModel)
                   ? chat.currentModel
                   : models.first['id'],
-              dropdownColor: const Color(0xFF1A1A2E),
-              style: const TextStyle(color: Colors.white, fontSize: 12),
-              icon: const Icon(Icons.expand_more, color: Colors.grey, size: 18),
+              dropdownColor: const Color(0xFF0A0A0A),
+              style: const TextStyle(
+                color: Color(0xFFEDEDED),
+                fontSize: 12,
+                letterSpacing: -0.2,
+              ),
+              icon: const Icon(Icons.expand_more, color: Color(0xFF666666), size: 16),
               isDense: true,
               items: models.map((m) {
                 return DropdownMenuItem(
                   value: m['id'],
-                  child: Text(m['name']!, style: const TextStyle(fontSize: 12)),
+                  child: Text(
+                    m['name']!,
+                    style: const TextStyle(fontSize: 12, letterSpacing: -0.2),
+                  ),
                 );
               }).toList(),
               onChanged: (value) {

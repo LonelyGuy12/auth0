@@ -29,34 +29,17 @@ class _TypingIndicatorState extends State<TypingIndicator>
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.only(bottom: 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 32,
-            height: 32,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: const Color(0xFF0066FF).withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: const Center(
-              child: Text('🤖', style: TextStyle(fontSize: 16)),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-            decoration: BoxDecoration(
-              color: const Color(0xFF1A1A2E),
-              border: Border.all(color: const Color(0xFF2A2A4A)),
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(4),
-                topRight: Radius.circular(16),
-                bottomLeft: Radius.circular(16),
-                bottomRight: Radius.circular(16),
-              ),
+              color: const Color(0xFF0A0A0A),
+              border: Border.all(color: const Color(0xFF1A1A1A)),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: AnimatedBuilder(
               animation: _controller,
@@ -72,13 +55,13 @@ class _TypingIndicatorState extends State<TypingIndicator>
                       offset: Offset(0, y * 2),
                       child: Container(
                         margin: const EdgeInsets.symmetric(horizontal: 3),
-                        width: 8,
-                        height: 8,
+                        width: 6,
+                        height: 6,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: Color.lerp(
-                            Colors.grey,
-                            Colors.white,
+                            const Color(0xFF666666),
+                            const Color(0xFFEDEDED),
                             value < 0.5 ? value * 2 : (1.0 - value) * 2,
                           ),
                         ),
