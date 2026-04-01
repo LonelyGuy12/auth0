@@ -89,7 +89,12 @@ class _ChatInputState extends State<ChatInput>
     }
 
     // Start recording
-    final started = await _whisper.startRecording();
+    final started = await _whisper.startRecording(
+      onSilenceDetected: () {
+        // Auto-triggered when user stops speaking for 2s
+        if (_isRecording && mounted) _toggleRecording();
+      },
+    );
     if (!mounted) return;
 
     if (!started) {
