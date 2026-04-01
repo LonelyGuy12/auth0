@@ -126,7 +126,8 @@ class Sidebar extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
           onTap: () => onItemSelected(index),
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
+            duration: const Duration(milliseconds: 400),
+            curve: Curves.easeInOutCubic,
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
               color: isSelected ? const Color(0xFF0A0A0A) : Colors.transparent,
@@ -148,16 +149,27 @@ class Sidebar extends StatelessWidget {
             ),
             child: Row(
               children: [
-                Icon(
-                  icon,
-                  size: 18,
-                  color: isSelected
-                      ? const Color(0xFFFFFFFF)
-                      : const Color(0xFF666666),
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  transitionBuilder: (child, animation) {
+                    return ScaleTransition(
+                      scale: animation,
+                      child: child,
+                    );
+                  },
+                  child: Icon(
+                    icon,
+                    key: ValueKey(isSelected),
+                    size: 18,
+                    color: isSelected
+                        ? const Color(0xFFFFFFFF)
+                        : const Color(0xFF666666),
+                  ),
                 ),
                 const SizedBox(width: 10),
-                Text(
-                  label,
+                AnimatedDefaultTextStyle(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOutCubic,
                   style: TextStyle(
                     color: isSelected
                         ? const Color(0xFFFFFFFF)
@@ -166,6 +178,7 @@ class Sidebar extends StatelessWidget {
                     fontWeight: isSelected ? FontWeight.w500 : FontWeight.w400,
                     letterSpacing: -0.2,
                   ),
+                  child: Text(label),
                 ),
               ],
             ),

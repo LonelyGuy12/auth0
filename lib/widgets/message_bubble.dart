@@ -25,8 +25,19 @@ class MessageBubble extends StatelessWidget {
   }
 
   Widget _buildUserBubble(BuildContext context) {
-    return FadeInUp(
-      duration: const Duration(milliseconds: 400),
+    return TweenAnimationBuilder<double>(
+      duration: const Duration(milliseconds: 600),
+      curve: Curves.easeOutCubic,
+      tween: Tween(begin: 0.0, end: 1.0),
+      builder: (context, value, child) {
+        return Transform.translate(
+          offset: Offset(20 * (1 - value), 0),
+          child: Opacity(
+            opacity: value,
+            child: child,
+          ),
+        );
+      },
       child: Padding(
         padding: const EdgeInsets.only(bottom: 28),
         child: Row(
@@ -81,8 +92,19 @@ class MessageBubble extends StatelessWidget {
   }
 
   Widget _buildAgentBubble(BuildContext context) {
-    return FadeInUp(
-      duration: const Duration(milliseconds: 400),
+    return TweenAnimationBuilder<double>(
+      duration: const Duration(milliseconds: 600),
+      curve: Curves.easeOutCubic,
+      tween: Tween(begin: 0.0, end: 1.0),
+      builder: (context, value, child) {
+        return Transform.translate(
+          offset: Offset(-20 * (1 - value), 0),
+          child: Opacity(
+            opacity: value,
+            child: child,
+          ),
+        );
+      },
       child: Padding(
         padding: const EdgeInsets.only(bottom: 28),
         child: Row(
@@ -98,43 +120,55 @@ class MessageBubble extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (message.isToolCall == true && message.toolName != null)
-                      Container(
-                        margin: const EdgeInsets.only(bottom: 12),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 14, vertical: 10),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              const Color(0xFF3291FF).withOpacity(0.1),
-                              const Color(0xFF3291FF).withOpacity(0.05),
+                      TweenAnimationBuilder<double>(
+                        duration: const Duration(milliseconds: 500),
+                        curve: Curves.elasticOut,
+                        tween: Tween(begin: 0.0, end: 1.0),
+                        builder: (context, value, child) {
+                          return Transform.scale(
+                            scale: value,
+                            alignment: Alignment.centerLeft,
+                            child: child,
+                          );
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.only(bottom: 12),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 14, vertical: 10),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                const Color(0xFF3291FF).withOpacity(0.1),
+                                const Color(0xFF3291FF).withOpacity(0.05),
+                              ],
+                            ),
+                            border: Border.all(
+                              color: const Color(0xFF3291FF).withOpacity(0.3),
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.auto_awesome,
+                                size: 14,
+                                color: const Color(0xFF3291FF).withOpacity(0.8),
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                message.toolName!,
+                                style: TextStyle(
+                                  color: const Color(0xFF3291FF).withOpacity(0.9),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: -0.2,
+                                ),
+                              ),
                             ],
                           ),
-                          border: Border.all(
-                            color: const Color(0xFF3291FF).withOpacity(0.3),
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.auto_awesome,
-                              size: 14,
-                              color: const Color(0xFF3291FF).withOpacity(0.8),
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              message.toolName!,
-                              style: TextStyle(
-                                color: const Color(0xFF3291FF).withOpacity(0.9),
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: -0.2,
-                              ),
-                            ),
-                          ],
                         ),
                       ),
                     Container(

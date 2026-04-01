@@ -133,7 +133,7 @@ class _ChatInputState extends State<ChatInput>
         }
       },
       listenFor: const Duration(seconds: 30),
-      pauseFor: const Duration(seconds: 2),
+      pauseFor: const Duration(seconds: 3),
       listenOptions: stt.SpeechListenOptions(
         partialResults: true,
         listenMode: stt.ListenMode.dictation,
@@ -284,7 +284,8 @@ class _ChatInputState extends State<ChatInput>
               const SizedBox(width: 12),
               // Send button
               AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
+                duration: const Duration(milliseconds: 400),
+                curve: Curves.easeInOutCubic,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: !isLoading && _controller.text.trim().isNotEmpty
@@ -309,14 +310,29 @@ class _ChatInputState extends State<ChatInput>
                     onTap: isLoading || _controller.text.trim().isEmpty
                         ? null
                         : _send,
-                    child: Container(
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOutCubic,
                       padding: const EdgeInsets.all(16),
-                      child: Icon(
-                        Icons.arrow_upward_rounded,
-                        color: isLoading || _controller.text.trim().isEmpty
-                            ? const Color(0xFF666666)
-                            : Colors.black,
-                        size: 22,
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                        transitionBuilder: (child, animation) {
+                          return ScaleTransition(
+                            scale: animation,
+                            child: RotationTransition(
+                              turns: animation,
+                              child: child,
+                            ),
+                          );
+                        },
+                        child: Icon(
+                          Icons.arrow_upward_rounded,
+                          key: ValueKey(isLoading || _controller.text.trim().isEmpty),
+                          color: isLoading || _controller.text.trim().isEmpty
+                              ? const Color(0xFF666666)
+                              : Colors.black,
+                          size: 22,
+                        ),
                       ),
                     ),
                   ),

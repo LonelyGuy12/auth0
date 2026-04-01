@@ -100,139 +100,281 @@ class SettingsScreen extends StatelessWidget {
     final isConnected = connection.isConnected;
     final isConnecting = connection.isConnecting;
 
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-      margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: isConnected
-                ? const Color(0xFF00D66F).withOpacity(0.1)
-                : Colors.transparent,
-            blurRadius: 20,
-            offset: const Offset(0, 4),
+    return TweenAnimationBuilder<double>(
+      duration: const Duration(milliseconds: 600),
+      curve: Curves.easeOutCubic,
+      tween: Tween(begin: 0.0, end: 1.0),
+      builder: (context, value, child) {
+        return Transform.scale(
+          scale: 0.95 + (0.05 * value),
+          child: Opacity(
+            opacity: value,
+            child: child,
           ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
+        );
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOutCubic,
+        margin: const EdgeInsets.only(bottom: 16),
+        decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          onTap: null,
-          child: Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: const Color(0xFF0A0A0A),
-              border: Border.all(
-                color: isConnected
-                    ? const Color(0xFF00D66F)
-                    : const Color(0xFF1A1A1A),
-                width: 1.5,
-              ),
-              borderRadius: BorderRadius.circular(16),
-              gradient: isConnected
-                  ? LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        const Color(0xFF00D66F).withOpacity(0.05),
-                        Colors.transparent,
-                      ],
-                    )
-                  : null,
+          boxShadow: [
+            BoxShadow(
+              color: isConnected
+                  ? const Color(0xFF00D66F).withOpacity(0.15)
+                  : Colors.transparent,
+              blurRadius: 24,
+              spreadRadius: 2,
+              offset: const Offset(0, 4),
             ),
-            child: Row(
-              children: [
-                Container(
-                  width: 56,
-                  height: 56,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF000000),
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(
-                      color: isConnected
-                          ? const Color(0xFF00D66F).withOpacity(0.3)
-                          : const Color(0xFF1A1A1A),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.3),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Center(
-                    child: Text(
-                      connection.emoji,
-                      style: const TextStyle(fontSize: 28),
-                    ),
-                  ),
+          ],
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(16),
+            onTap: null,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeInOutCubic,
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: const Color(0xFF0A0A0A),
+                border: Border.all(
+                  color: isConnected
+                      ? const Color(0xFF00D66F)
+                      : const Color(0xFF1A1A1A),
+                  width: 1.5,
                 ),
-                const SizedBox(width: 20),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        connection.displayName,
-                        style: const TextStyle(
-                          color: Color(0xFFFFFFFF),
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: -0.4,
-                        ),
+                borderRadius: BorderRadius.circular(16),
+                gradient: isConnected
+                    ? LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          const Color(0xFF00D66F).withOpacity(0.05),
+                          Colors.transparent,
+                        ],
+                      )
+                    : null,
+              ),
+              child: Row(
+                children: [
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 500),
+                    curve: Curves.easeInOutCubic,
+                    width: 56,
+                    height: 56,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF000000),
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: isConnected
+                            ? const Color(0xFF00D66F).withOpacity(0.3)
+                            : const Color(0xFF1A1A1A),
                       ),
-                      const SizedBox(height: 6),
-                      Text(
-                        connection.description,
-                        style: const TextStyle(
-                          color: Color(0xFF666666),
-                          fontSize: 13,
-                          letterSpacing: -0.2,
-                          height: 1.4,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.3),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
                         ),
+                      ],
+                    ),
+                    child: Center(
+                      child: Text(
+                        connection.emoji,
+                        style: const TextStyle(fontSize: 28),
                       ),
-                      if (isConnected) ...[
-                        const SizedBox(height: 12),
-                        Container(
+                    ),
+                  ),
+                  const SizedBox(width: 20),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          connection.displayName,
+                          style: const TextStyle(
+                            color: Color(0xFFFFFFFF),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: -0.4,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          connection.description,
+                          style: const TextStyle(
+                            color: Color(0xFF666666),
+                            fontSize: 13,
+                            letterSpacing: -0.2,
+                            height: 1.4,
+                          ),
+                        ),
+                        AnimatedSize(
+                          duration: const Duration(milliseconds: 400),
+                          curve: Curves.easeInOutCubic,
+                          child: isConnected
+                              ? Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(height: 12),
+                                    TweenAnimationBuilder<double>(
+                                      duration: const Duration(milliseconds: 600),
+                                      curve: Curves.elasticOut,
+                                      tween: Tween(begin: 0.0, end: 1.0),
+                                      builder: (context, value, child) {
+                                        return Transform.scale(
+                                          scale: value,
+                                          alignment: Alignment.centerLeft,
+                                          child: child,
+                                        );
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                          vertical: 8,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFF00D66F).withOpacity(0.15),
+                                          borderRadius: BorderRadius.circular(8),
+                                          border: Border.all(
+                                            color: const Color(0xFF00D66F).withOpacity(0.3),
+                                          ),
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            TweenAnimationBuilder<double>(
+                                              duration: const Duration(milliseconds: 1500),
+                                              curve: Curves.easeInOut,
+                                              tween: Tween(begin: 0.6, end: 1.0),
+                                              builder: (context, value, child) {
+                                                return Container(
+                                                  width: 8,
+                                                  height: 8,
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: const Color(0xFF00D66F),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: const Color(0xFF00D66F).withOpacity(value * 0.8),
+                                                        blurRadius: 8 * value,
+                                                        spreadRadius: 1 * value,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              },
+                                              onEnd: () {
+                                                // Loop animation
+                                              },
+                                            ),
+                                            const SizedBox(width: 8),
+                                            const Text(
+                                              'Connected',
+                                              style: TextStyle(
+                                                color: Color(0xFF00D66F),
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w600,
+                                                letterSpacing: -0.2,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              : const SizedBox.shrink(),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 20),
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 400),
+                    switchInCurve: Curves.easeInOutCubic,
+                    switchOutCurve: Curves.easeInOutCubic,
+                    transitionBuilder: (child, animation) {
+                      return ScaleTransition(
+                        scale: animation,
+                        child: FadeTransition(
+                          opacity: animation,
+                          child: child,
+                        ),
+                      );
+                    },
+                    child: Material(
+                      key: ValueKey(isConnected),
+                      color: isConnected
+                          ? Colors.transparent
+                          : const Color(0xFFFFFFFF),
+                      borderRadius: BorderRadius.circular(10),
+                      elevation: isConnected ? 0 : 2,
+                      shadowColor: Colors.black.withOpacity(0.2),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(10),
+                        onTap: isConnecting
+                            ? null
+                            : () => _handleConnection(context, connection, auth),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOutCubic,
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 8,
+                            horizontal: 24,
+                            vertical: 14,
                           ),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF00D66F).withOpacity(0.15),
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              color: const Color(0xFF00D66F).withOpacity(0.3),
-                            ),
-                          ),
+                          decoration: isConnected
+                              ? BoxDecoration(
+                                  border: Border.all(color: const Color(0xFF1A1A1A)),
+                                  borderRadius: BorderRadius.circular(10),
+                                )
+                              : BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  gradient: const LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      Color(0xFFFFFFFF),
+                                      Color(0xFFF5F5F5),
+                                    ],
+                                  ),
+                                ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Container(
-                                width: 8,
-                                height: 8,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: const Color(0xFF00D66F),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: const Color(0xFF00D66F).withOpacity(0.5),
-                                      blurRadius: 8,
-                                      spreadRadius: 1,
-                                    ),
-                                  ],
+                              if (isConnecting)
+                                const SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation(Color(0xFF666666)),
+                                  ),
+                                )
+                              else
+                                Icon(
+                                  isConnected ? Icons.link_off : Icons.link,
+                                  size: 16,
+                                  color: isConnected
+                                      ? const Color(0xFF666666)
+                                      : Colors.black,
                                 ),
-                              ),
                               const SizedBox(width: 8),
-                              const Text(
-                                'Connected',
+                              Text(
+                                isConnecting
+                                    ? 'Connecting...'
+                                    : isConnected
+                                        ? 'Disconnect'
+                                        : 'Connect',
                                 style: TextStyle(
-                                  color: Color(0xFF00D66F),
-                                  fontSize: 12,
+                                  color: isConnected
+                                      ? const Color(0xFF666666)
+                                      : Colors.black,
+                                  fontSize: 14,
                                   fontWeight: FontWeight.w600,
                                   letterSpacing: -0.2,
                                 ),
@@ -240,90 +382,11 @@ class SettingsScreen extends StatelessWidget {
                             ],
                           ),
                         ),
-                      ],
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 20),
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  child: Material(
-                    key: ValueKey(isConnected),
-                    color: isConnected
-                        ? Colors.transparent
-                        : const Color(0xFFFFFFFF),
-                    borderRadius: BorderRadius.circular(10),
-                    elevation: isConnected ? 0 : 2,
-                    shadowColor: Colors.black.withOpacity(0.2),
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(10),
-                      onTap: isConnecting
-                          ? null
-                          : () => _handleConnection(context, connection, auth),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 24,
-                          vertical: 14,
-                        ),
-                        decoration: isConnected
-                            ? BoxDecoration(
-                                border: Border.all(color: const Color(0xFF1A1A1A)),
-                                borderRadius: BorderRadius.circular(10),
-                              )
-                            : BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                gradient: const LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                    Color(0xFFFFFFFF),
-                                    Color(0xFFF5F5F5),
-                                  ],
-                                ),
-                              ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            if (isConnecting)
-                              const SizedBox(
-                                width: 16,
-                                height: 16,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  valueColor: AlwaysStoppedAnimation(Color(0xFF666666)),
-                                ),
-                              )
-                            else
-                              Icon(
-                                isConnected ? Icons.link_off : Icons.link,
-                                size: 16,
-                                color: isConnected
-                                    ? const Color(0xFF666666)
-                                    : Colors.black,
-                              ),
-                            const SizedBox(width: 8),
-                            Text(
-                              isConnecting
-                                  ? 'Connecting...'
-                                  : isConnected
-                                      ? 'Disconnect'
-                                      : 'Connect',
-                              style: TextStyle(
-                                color: isConnected
-                                    ? const Color(0xFF666666)
-                                    : Colors.black,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: -0.2,
-                              ),
-                            ),
-                          ],
-                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
