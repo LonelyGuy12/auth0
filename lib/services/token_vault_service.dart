@@ -15,16 +15,11 @@ class TokenVaultService {
     'google': {
       'connection': 'google-oauth2',
       'scopes':
-          'https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/contacts.readonly https://www.googleapis.com/auth/drive.readonly',
+          'https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/contacts.readonly https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/tasks https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/presentations',
     },
     'github': {
       'connection': 'github',
       'scopes': 'repo user read:org',
-    },
-    'spotify': {
-      'connection': 'spotify',
-      'scopes':
-          'user-read-playback-state user-modify-playback-state playlist-read-private user-library-read',
     },
   };
 

@@ -17,7 +17,8 @@ class ChatProvider extends ChangeNotifier {
     messages.add(Message(
       content:
           "👋 Hi! I'm your AI agent powered by Auth0 Token Vault.\n\n"
-          "🔗 Connect your services in the sidebar\n"
+          "🎤 Use the mic button to speak commands\n"
+          "⚙️ Go to Settings to connect your accounts\n"
           "💬 Then ask me anything!\n\n"
           "I can manage your **Google Calendar**, check your **GitHub repos**, and more.",
       type: MessageType.agent,
@@ -75,7 +76,8 @@ class ChatProvider extends ChangeNotifier {
     messages.add(Message(
       content:
           "👋 Hi! I'm your AI agent powered by Auth0 Token Vault.\n\n"
-          "🔗 Connect your services in the sidebar\n"
+          "🎤 Use the mic button to speak commands\n"
+          "⚙️ Go to Settings to connect your accounts\n"
           "💬 Then ask me anything!\n\n"
           "I can manage your **Google Calendar**, check your **GitHub repos**, and more.",
       type: MessageType.agent,

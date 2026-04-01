@@ -7,6 +7,9 @@ import 'gmail_service.dart';
 import 'youtube_service.dart';
 import 'contacts_service.dart';
 import 'drive_service.dart';
+import 'tasks_service.dart';
+import 'sheets_service.dart';
+import 'slides_service.dart';
 import 'token_vault_service.dart';
 
 class AiAgentService {
@@ -17,6 +20,9 @@ class AiAgentService {
   final YouTubeService _youtube = YouTubeService();
   final ContactsService _contacts = ContactsService();
   final DriveService _drive = DriveService();
+  final TasksService _tasks = TasksService();
+  final SheetsService _sheets = SheetsService();
+  final SlidesService _slides = SlidesService();
   final TokenVaultService _tokenVault = TokenVaultService();
   String _currentModel;
 
@@ -259,6 +265,153 @@ class AiAgentService {
         }
         try {
           final result = await _drive.getStorageQuota();
+          return jsonEncode(result);
+        } catch (e) {
+          return jsonEncode({'error': e.toString()});
+        }
+
+      case 'get_task_lists':
+        if (!await _tokenVault.isConnected('google')) {
+          return jsonEncode({'error': 'Google is not connected. Please ask the user to connect it in the sidebar.'});
+        }
+        try {
+          final result = await _tasks.getTaskLists();
+          return jsonEncode({'taskLists': result});
+        } catch (e) {
+          return jsonEncode({'error': e.toString()});
+        }
+
+      case 'get_tasks':
+        if (!await _tokenVault.isConnected('google')) {
+          return jsonEncode({'error': 'Google is not connected. Please ask the user to connect it in the sidebar.'});
+        }
+        try {
+          final taskListId = args['taskListId'] as String? ?? '@default';
+          final showCompleted = args['showCompleted'] as bool? ?? false;
+          final result = await _tasks.getTasks(taskListId, showCompleted: showCompleted);
+          return jsonEncode({'tasks': result});
+        } catch (e) {
+          return jsonEncode({'error': e.toString()});
+        }
+
+      case 'create_task':
+        if (!await _tokenVault.isConnected('google')) {
+          return jsonEncode({'error': 'Google is not connected. Please ask the user to connect it in the sidebar.'});
+        }
+        try {
+          final taskListId = args['taskListId'] as String? ?? '@default';
+          final title = args['title'] as String? ?? '';
+          final notes = args['notes'] as String?;
+          final due = args['due'] as String?;
+          if (title.isEmpty) return jsonEncode({'error': 'title is required.'});
+          final result = await _tasks.createTask(taskListId, title, notes: notes, due: due);
+          return jsonEncode(result);
+        } catch (e) {
+          return jsonEncode({'error': e.toString()});
+        }
+
+      case 'complete_task':
+        if (!await _tokenVault.isConnected('google')) {
+          return jsonEncode({'error': 'Google is not connected. Please ask the user to connect it in the sidebar.'});
+        }
+        try {
+          final taskListId = args['taskListId'] as String? ?? '@default';
+          final taskId = args['taskId'] as String? ?? '';
+          if (taskId.isEmpty) return jsonEncode({'error': 'taskId is required.'});
+          final result = await _tasks.completeTask(taskListId, taskId);
+          return jsonEncode(result);
+        } catch (e) {
+          return jsonEncode({'error': e.toString()});
+        }
+
+      case 'list_spreadsheets':
+        if (!await _tokenVault.isConnected('google')) {
+          return jsonEncode({'error': 'Google is not connected. Please ask the user to connect it in the sidebar.'});
+        }
+        try {
+          final maxResults = args['maxResults'] as int? ?? 10;
+          final result = await _sheets.listSpreadsheets(maxResults: maxResults);
+          return jsonEncode({'spreadsheets': result});
+        } catch (e) {
+          return jsonEncode({'error': e.toString()});
+        }
+
+      case 'get_spreadsheet_info':
+        if (!await _tokenVault.isConnected('google')) {
+          return jsonEncode({'error': 'Google is not connected. Please ask the user to connect it in the sidebar.'});
+        }
+        try {
+          final id = args['spreadsheetId'] as String? ?? '';
+          if (id.isEmpty) return jsonEncode({'error': 'spreadsheetId is required.'});
+          final result = await _sheets.getSpreadsheetInfo(id);
+          return jsonEncode(result);
+        } catch (e) {
+          return jsonEncode({'error': e.toString()});
+        }
+
+      case 'read_sheet_range':
+        if (!await _tokenVault.isConnected('google')) {
+          return jsonEncode({'error': 'Google is not connected. Please ask the user to connect it in the sidebar.'});
+        }
+        try {
+          final id = args['spreadsheetId'] as String? ?? '';
+          final range = args['range'] as String? ?? '';
+          if (id.isEmpty || range.isEmpty) return jsonEncode({'error': 'spreadsheetId and range are required.'});
+          final result = await _sheets.readRange(id, range);
+          return jsonEncode(result);
+        } catch (e) {
+          return jsonEncode({'error': e.toString()});
+        }
+
+      case 'append_sheet_rows':
+        if (!await _tokenVault.isConnected('google')) {
+          return jsonEncode({'error': 'Google is not connected. Please ask the user to connect it in the sidebar.'});
+        }
+        try {
+          final id = args['spreadsheetId'] as String? ?? '';
+          final range = args['range'] as String? ?? '';
+          final rawValues = args['values'] as List<dynamic>? ?? [];
+          final values = rawValues.map((row) => row as List<dynamic>).toList();
+          if (id.isEmpty) return jsonEncode({'error': 'spreadsheetId is required.'});
+          final result = await _sheets.appendRows(id, range, values);
+          return jsonEncode(result);
+        } catch (e) {
+          return jsonEncode({'error': e.toString()});
+        }
+
+      case 'list_presentations':
+        if (!await _tokenVault.isConnected('google')) {
+          return jsonEncode({'error': 'Google is not connected. Please ask the user to connect it in the sidebar.'});
+        }
+        try {
+          final maxResults = args['maxResults'] as int? ?? 10;
+          final result = await _slides.listPresentations(maxResults: maxResults);
+          return jsonEncode({'presentations': result});
+        } catch (e) {
+          return jsonEncode({'error': e.toString()});
+        }
+
+      case 'get_presentation_info':
+        if (!await _tokenVault.isConnected('google')) {
+          return jsonEncode({'error': 'Google is not connected. Please ask the user to connect it in the sidebar.'});
+        }
+        try {
+          final id = args['presentationId'] as String? ?? '';
+          if (id.isEmpty) return jsonEncode({'error': 'presentationId is required.'});
+          final result = await _slides.getPresentationInfo(id);
+          return jsonEncode(result);
+        } catch (e) {
+          return jsonEncode({'error': e.toString()});
+        }
+
+      case 'get_presentation_content':
+        if (!await _tokenVault.isConnected('google')) {
+          return jsonEncode({'error': 'Google is not connected. Please ask the user to connect it in the sidebar.'});
+        }
+        try {
+          final id = args['presentationId'] as String? ?? '';
+          if (id.isEmpty) return jsonEncode({'error': 'presentationId is required.'});
+          final result = await _slides.getPresentationContent(id);
           return jsonEncode(result);
         } catch (e) {
           return jsonEncode({'error': e.toString()});

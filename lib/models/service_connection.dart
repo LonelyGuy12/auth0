@@ -1,4 +1,4 @@
-enum ServiceType { google, github, spotify }
+enum ServiceType { google, github }
 
 class ServiceConnection {
   final ServiceType type;
@@ -30,12 +30,6 @@ class ServiceConnection {
         displayName: 'GitHub',
         emoji: '🐙',
         description: 'View repos, profile & activity',
-      ),
-      ServiceConnection(
-        type: ServiceType.spotify,
-        displayName: 'Spotify',
-        emoji: '🎵',
-        description: 'Control playback & view playlists',
       ),
     ];
   }

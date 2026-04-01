@@ -29,17 +29,34 @@ class _TypingIndicatorState extends State<TypingIndicator>
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
+      padding: const EdgeInsets.only(bottom: 28),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             decoration: BoxDecoration(
-              color: const Color(0xFF0A0A0A),
-              border: Border.all(color: const Color(0xFF1A1A1A)),
-              borderRadius: BorderRadius.circular(12),
+              gradient: const LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Color(0xFF0F0F0F),
+                  Color(0xFF0A0A0A),
+                ],
+              ),
+              border: Border.all(
+                color: const Color(0xFF1A1A1A),
+                width: 1.5,
+              ),
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
             child: AnimatedBuilder(
               animation: _controller,
@@ -54,9 +71,9 @@ class _TypingIndicatorState extends State<TypingIndicator>
                     return Transform.translate(
                       offset: Offset(0, y * 2),
                       child: Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 3),
-                        width: 6,
-                        height: 6,
+                        margin: const EdgeInsets.symmetric(horizontal: 4),
+                        width: 7,
+                        height: 7,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: Color.lerp(
@@ -64,6 +81,15 @@ class _TypingIndicatorState extends State<TypingIndicator>
                             const Color(0xFFEDEDED),
                             value < 0.5 ? value * 2 : (1.0 - value) * 2,
                           ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.white.withOpacity(
+                                (value < 0.5 ? value * 2 : (1.0 - value) * 2) * 0.3,
+                              ),
+                              blurRadius: 4,
+                              spreadRadius: 1,
+                            ),
+                          ],
                         ),
                       ),
                     );

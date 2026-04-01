@@ -25,6 +25,7 @@ class AiAgentApp extends StatelessWidget {
             displayColor: const Color(0xFFFFFFFF),
           ),
         ),
+        splashFactory: InkRipple.splashFactory,
       ),
       home: const HomeScreen(),
     );

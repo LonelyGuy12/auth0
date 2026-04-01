@@ -281,6 +281,181 @@ class OpenRouterService {
         },
       },
     },
+    {
+      'type': 'function',
+      'function': {
+        'name': 'get_task_lists',
+        'description': "Gets the user's Google Tasks lists",
+        'parameters': {'type': 'object', 'properties': {}, 'required': []},
+      },
+    },
+    {
+      'type': 'function',
+      'function': {
+        'name': 'get_tasks',
+        'description': 'Gets tasks from a Google Tasks list',
+        'parameters': {
+          'type': 'object',
+          'properties': {
+            'taskListId': {
+              'type': 'string',
+              'description': 'Task list ID (use "@default" for the default list)',
+            },
+            'showCompleted': {
+              'type': 'boolean',
+              'description': 'Whether to include completed tasks (default false)',
+            },
+          },
+          'required': [],
+        },
+      },
+    },
+    {
+      'type': 'function',
+      'function': {
+        'name': 'create_task',
+        'description': 'Creates a new task in Google Tasks',
+        'parameters': {
+          'type': 'object',
+          'properties': {
+            'title': {'type': 'string', 'description': 'Task title'},
+            'taskListId': {
+              'type': 'string',
+              'description': 'Task list ID (use "@default" for the default list)',
+            },
+            'notes': {'type': 'string', 'description': 'Optional task notes/description'},
+            'due': {
+              'type': 'string',
+              'description': 'Optional due date in RFC 3339 format (e.g. 2026-04-10T00:00:00.000Z)',
+            },
+          },
+          'required': ['title'],
+        },
+      },
+    },
+    {
+      'type': 'function',
+      'function': {
+        'name': 'complete_task',
+        'description': 'Marks a Google Task as completed',
+        'parameters': {
+          'type': 'object',
+          'properties': {
+            'taskId': {'type': 'string', 'description': 'The task ID to mark complete'},
+            'taskListId': {
+              'type': 'string',
+              'description': 'Task list ID (use "@default" for the default list)',
+            },
+          },
+          'required': ['taskId'],
+        },
+      },
+    },
+    {
+      'type': 'function',
+      'function': {
+        'name': 'list_spreadsheets',
+        'description': "Lists the user's recent Google Sheets spreadsheets",
+        'parameters': {
+          'type': 'object',
+          'properties': {
+            'maxResults': {'type': 'integer', 'description': 'Max number to return (default 10)'},
+          },
+          'required': [],
+        },
+      },
+    },
+    {
+      'type': 'function',
+      'function': {
+        'name': 'get_spreadsheet_info',
+        'description': 'Gets the sheet names and metadata of a Google Sheets spreadsheet',
+        'parameters': {
+          'type': 'object',
+          'properties': {
+            'spreadsheetId': {'type': 'string', 'description': 'The spreadsheet ID'},
+          },
+          'required': ['spreadsheetId'],
+        },
+      },
+    },
+    {
+      'type': 'function',
+      'function': {
+        'name': 'read_sheet_range',
+        'description': 'Reads cell values from a range in a Google Sheet (e.g. Sheet1!A1:D10)',
+        'parameters': {
+          'type': 'object',
+          'properties': {
+            'spreadsheetId': {'type': 'string', 'description': 'The spreadsheet ID'},
+            'range': {'type': 'string', 'description': 'A1 notation range (e.g. "Sheet1!A1:D10")'},
+          },
+          'required': ['spreadsheetId', 'range'],
+        },
+      },
+    },
+    {
+      'type': 'function',
+      'function': {
+        'name': 'append_sheet_rows',
+        'description': 'Appends rows of data to a Google Sheet',
+        'parameters': {
+          'type': 'object',
+          'properties': {
+            'spreadsheetId': {'type': 'string', 'description': 'The spreadsheet ID'},
+            'range': {'type': 'string', 'description': 'Sheet name or range to append to (e.g. "Sheet1")'},
+            'values': {
+              'type': 'array',
+              'description': 'Array of rows to append, each row is an array of cell values',
+              'items': {'type': 'array', 'items': {}},
+            },
+          },
+          'required': ['spreadsheetId', 'values'],
+        },
+      },
+    },
+    {
+      'type': 'function',
+      'function': {
+        'name': 'list_presentations',
+        'description': "Lists the user's recent Google Slides presentations",
+        'parameters': {
+          'type': 'object',
+          'properties': {
+            'maxResults': {'type': 'integer', 'description': 'Max number to return (default 10)'},
+          },
+          'required': [],
+        },
+      },
+    },
+    {
+      'type': 'function',
+      'function': {
+        'name': 'get_presentation_info',
+        'description': 'Gets title and slide count of a Google Slides presentation',
+        'parameters': {
+          'type': 'object',
+          'properties': {
+            'presentationId': {'type': 'string', 'description': 'The presentation ID'},
+          },
+          'required': ['presentationId'],
+        },
+      },
+    },
+    {
+      'type': 'function',
+      'function': {
+        'name': 'get_presentation_content',
+        'description': 'Reads the text content of all slides in a Google Slides presentation',
+        'parameters': {
+          'type': 'object',
+          'properties': {
+            'presentationId': {'type': 'string', 'description': 'The presentation ID'},
+          },
+          'required': ['presentationId'],
+        },
+      },
+    },
   ];
 
   Future<Map<String, dynamic>> _callApi(
@@ -338,6 +513,9 @@ You can help users with:
 - YouTube: View channel info, your videos, and search YouTube
 - Google Contacts: View and search contacts
 - Google Drive: List, search files and check storage
+- Google Tasks: View task lists, view/create/complete tasks
+- Google Sheets: List, read, and append data to spreadsheets
+- Google Slides: List presentations and read their content
 
 When using tools, be concise and format results nicely using markdown.
 If a service is not connected, tell the user to connect it in the sidebar.

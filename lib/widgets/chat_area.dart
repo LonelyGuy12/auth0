@@ -15,7 +15,7 @@ class ChatArea extends StatelessWidget {
       children: [
         // Header
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
           decoration: const BoxDecoration(
             color: Color(0xFF000000),
             border: Border(
@@ -24,25 +24,52 @@ class ChatArea extends StatelessWidget {
           ),
           child: Row(
             children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF0A0A0A),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: const Color(0xFF1A1A1A)),
+                ),
+                child: const Icon(
+                  Icons.chat_bubble_outline,
+                  color: Color(0xFFFFFFFF),
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 12),
               const Text(
                 'Chat',
                 style: TextStyle(
                   color: Color(0xFFFFFFFF),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: -0.3,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: -0.4,
                 ),
               ),
               const Spacer(),
               const ModelSelector(),
               const SizedBox(width: 12),
               Consumer<ChatProvider>(
-                builder: (context, chat, _) => IconButton(
-                  icon: const Icon(Icons.refresh, color: Color(0xFF666666), size: 18),
-                  tooltip: 'Clear chat',
-                  onPressed: chat.clearChat,
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
+                builder: (context, chat, _) => Material(
+                  color: const Color(0xFF0A0A0A),
+                  borderRadius: BorderRadius.circular(8),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(8),
+                    onTap: chat.clearChat,
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: const Color(0xFF1A1A1A)),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(
+                        Icons.refresh,
+                        color: Color(0xFF666666),
+                        size: 18,
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -57,7 +84,7 @@ class ChatArea extends StatelessWidget {
                   chat.messages.length + (chat.isLoading ? 1 : 0);
               return ListView.builder(
                 controller: chat.scrollController,
-                padding: const EdgeInsets.all(24),
+                padding: const EdgeInsets.all(32),
                 itemCount: itemCount,
                 itemBuilder: (context, index) {
                   if (index >= chat.messages.length) {

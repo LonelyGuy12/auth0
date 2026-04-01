@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
-import '../providers/chat_provider.dart';
-import 'connection_tile.dart';
 
 class Sidebar extends StatelessWidget {
-  const Sidebar({super.key});
+  final int selectedIndex;
+  final Function(int) onItemSelected;
+
+  const Sidebar({
+    super.key,
+    required this.selectedIndex,
+    required this.onItemSelected,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -58,67 +63,22 @@ class Sidebar extends StatelessWidget {
 
           Container(height: 1, color: const Color(0xFF1A1A1A)),
 
-          // Scrollable content
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  // Connections label
-                  const Padding(
-                    padding: EdgeInsets.fromLTRB(24, 20, 24, 12),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Connections',
-                        style: TextStyle(
-                          color: Color(0xFF666666),
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          letterSpacing: -0.2,
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  // Connection tiles
-                  Consumer<AuthProvider>(
-                    builder: (context, auth, _) {
-                      return Column(
-                        children: auth.connections
-                            .map((conn) => ConnectionTile(connection: conn))
-                            .toList(),
-                      );
-                    },
-                  ),
-
-                  const SizedBox(height: 20),
-                  Container(height: 1, color: const Color(0xFF1A1A1A)),
-
-                  // Try asking label
-                  const Padding(
-                    padding: EdgeInsets.fromLTRB(24, 20, 24, 12),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Quick Actions',
-                        style: TextStyle(
-                          color: Color(0xFF666666),
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          letterSpacing: -0.2,
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  // Suggestion chips
-                  ..._buildSuggestions(context),
-
-                  const SizedBox(height: 20),
-                ],
-              ),
-            ),
+          // Navigation items
+          _buildNavItem(
+            icon: Icons.chat_bubble_outline,
+            label: 'Chat',
+            index: 0,
           ),
+          _buildNavItem(
+            icon: Icons.settings_outlined,
+            label: 'Settings',
+            index: 1,
+          ),
+
+          const SizedBox(height: 12),
+          Container(height: 1, color: const Color(0xFF1A1A1A)),
+
+          const Spacer(),
 
           // Footer
           Container(
@@ -151,53 +111,67 @@ class Sidebar extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildSuggestions(BuildContext context) {
-    final suggestions = [
-      {'emoji': '📅', 'text': 'What meetings do I have today?'},
-      {'emoji': '🐙', 'text': 'Show my GitHub repositories'},
-      {'emoji': '➕', 'text': 'Create a meeting tomorrow at 2pm for 1 hour'},
-      {'emoji': '👤', 'text': 'Show my GitHub profile'},
-    ];
-
-    return suggestions.map((s) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            borderRadius: BorderRadius.circular(6),
-            hoverColor: const Color(0xFF0A0A0A),
-            onTap: () {
-              context.read<ChatProvider>().sendMessage(s['text']!);
-            },
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-              decoration: BoxDecoration(
-                border: Border.all(color: const Color(0xFF1A1A1A)),
-                borderRadius: BorderRadius.circular(6),
+  Widget _buildNavItem({
+    required IconData icon,
+    required String label,
+    required int index,
+  }) {
+    final isSelected = selectedIndex == index;
+    
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(8),
+          onTap: () => onItemSelected(index),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            decoration: BoxDecoration(
+              color: isSelected ? const Color(0xFF0A0A0A) : Colors.transparent,
+              border: Border.all(
+                color: isSelected
+                    ? const Color(0xFF1A1A1A)
+                    : Colors.transparent,
               ),
-              child: Row(
-                children: [
-                  Text(s['emoji']!, style: const TextStyle(fontSize: 14)),
-                  const SizedBox(width: 10),
-                  Flexible(
-                    child: Text(
-                      s['text']!,
-                      style: const TextStyle(
-                        color: Color(0xFFEDEDED),
-                        fontSize: 13,
-                        letterSpacing: -0.2,
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: isSelected
+                  ? [
+                      BoxShadow(
+                        color: Colors.white.withOpacity(0.03),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
                       ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                    ]
+                  : null,
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  icon,
+                  size: 18,
+                  color: isSelected
+                      ? const Color(0xFFFFFFFF)
+                      : const Color(0xFF666666),
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  label,
+                  style: TextStyle(
+                    color: isSelected
+                        ? const Color(0xFFFFFFFF)
+                        : const Color(0xFF666666),
+                    fontSize: 13,
+                    fontWeight: isSelected ? FontWeight.w500 : FontWeight.w400,
+                    letterSpacing: -0.2,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
-      );
-    }).toList();
+      ),
+    );
   }
 }

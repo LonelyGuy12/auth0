@@ -20,11 +20,11 @@ class ModelSelector extends StatelessWidget {
     return Consumer<ChatProvider>(
       builder: (context, chat, _) {
         return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
             color: const Color(0xFF0A0A0A),
             border: Border.all(color: const Color(0xFF1A1A1A)),
-            borderRadius: BorderRadius.circular(6),
+            borderRadius: BorderRadius.circular(8),
           ),
           child: DropdownButtonHideUnderline(
             child: DropdownButton<String>(
@@ -34,17 +34,18 @@ class ModelSelector extends StatelessWidget {
               dropdownColor: const Color(0xFF0A0A0A),
               style: const TextStyle(
                 color: Color(0xFFEDEDED),
-                fontSize: 12,
+                fontSize: 13,
                 letterSpacing: -0.2,
               ),
               icon: const Icon(Icons.expand_more, color: Color(0xFF666666), size: 16),
               isDense: true,
+              borderRadius: BorderRadius.circular(8),
               items: models.map((m) {
                 return DropdownMenuItem(
                   value: m['id'],
                   child: Text(
                     m['name']!,
-                    style: const TextStyle(fontSize: 12, letterSpacing: -0.2),
+                    style: const TextStyle(fontSize: 13, letterSpacing: -0.2),
                   ),
                 );
               }).toList(),
