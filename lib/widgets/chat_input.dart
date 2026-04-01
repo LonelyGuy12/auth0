@@ -163,7 +163,45 @@ class _ChatInputState extends State<ChatInput>
               top: BorderSide(color: Color(0xFF1A1A1A), width: 1),
             ),
           ),
-          child: Row(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Listening indicator banner
+              AnimatedSize(
+                duration: const Duration(milliseconds: 250),
+                curve: Curves.easeInOut,
+                child: _isListening
+                    ? Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            _PulsingDot(),
+                            const SizedBox(width: 8),
+                            const Text(
+                              'Listening...',
+                              style: TextStyle(
+                                color: Color(0xFF3291FF),
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                                letterSpacing: -0.2,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            const Text(
+                              'Tap mic to stop',
+                              style: TextStyle(
+                                color: Color(0xFF444444),
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : const SizedBox.shrink(),
+              ),
+              Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               // Mic button with pulse
@@ -339,9 +377,56 @@ class _ChatInputState extends State<ChatInput>
                 ),
               ),
             ],
-          ),
+          ),         // close Row
+            ],
+          ),         // close Column
         );
       },
+    );
+  }
+}
+
+/// A small dot that pulses between blue and dim to indicate active listening.
+class _PulsingDot extends StatefulWidget {
+  @override
+  State<_PulsingDot> createState() => _PulsingDotState();
+}
+
+class _PulsingDotState extends State<_PulsingDot>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl;
+  late final Animation<double> _anim;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 700),
+    )..repeat(reverse: true);
+    _anim = Tween<double>(begin: 0.3, end: 1.0).animate(
+      CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _anim,
+      child: Container(
+        width: 8,
+        height: 8,
+        decoration: const BoxDecoration(
+          color: Color(0xFF3291FF),
+          shape: BoxShape.circle,
+        ),
+      ),
     );
   }
 }
