@@ -6,7 +6,7 @@ class ModelSelector extends StatelessWidget {
   const ModelSelector({super.key});
 
   static const List<Map<String, String>> models = [
-    {'id': 'qwen/qwen3.6-plus-preview:free', 'name': '🆓 Qwen 3.6 Plus'},
+    {'id': 'openrouter/auto', 'name': '🚀 Auto (Best Available)'},
     {'id': 'nvidia/nemotron-3-super-120b-a12b:free', 'name': '🆓 Nemotron 3 Super'},
     {'id': 'minimax/minimax-m2.5:free', 'name': '🆓 MiniMax M2.5'},
     {'id': 'z-ai/glm-4.5-air:free', 'name': '🆓 GLM 4.5 Air'},
