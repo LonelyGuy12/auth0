@@ -15,6 +15,7 @@ class WhisperService {
 
   Timer? _silenceTimer;
   Timer? _amplitudePollTimer;
+  Timer? _maxDurationTimer;
 
   /// Amplitude below this (dBFS) = silence.
   static const double _silenceThreshold = -38.0;
@@ -22,11 +23,15 @@ class WhisperService {
   /// How long continuous silence triggers auto-stop.
   static const Duration _silenceDuration = Duration(seconds: 2);
 
+  /// Absolute max recording duration (safety net).
+  static const Duration _maxDuration = Duration(seconds: 25);
+
   Future<bool> hasPermission() => _recorder.hasPermission();
 
   /// Starts recording. Calls [onSilenceDetected] after [_silenceDuration]
   /// of continuous silence.
-  Future<bool> startRecording({required void Function() onSilenceDetected}) async {
+  Future<bool> startRecording(
+      {required void Function() onSilenceDetected}) async {
     if (!await _recorder.hasPermission()) return false;
 
     final dir = await getTemporaryDirectory();
@@ -42,12 +47,22 @@ class WhisperService {
       path: _recordingPath!,
     );
 
+    // Safety net: auto-stop after 25s regardless
+    _maxDurationTimer = Timer(_maxDuration, () {
+      _maxDurationTimer = null;
+      onSilenceDetected();
+    });
+
+    // Skip the first second to avoid false-positive silence at recording start
+    await Future.delayed(const Duration(seconds: 1));
+
     // Poll amplitude every 200ms to detect silence
     _amplitudePollTimer = Timer.periodic(
       const Duration(milliseconds: 200),
       (_) async {
         if (!await _recorder.isRecording()) return;
         final amp = await _recorder.getAmplitude();
+
         if (amp.current < _silenceThreshold) {
           _silenceTimer ??= Timer(_silenceDuration, () {
             _silenceTimer = null;
@@ -70,6 +85,8 @@ class WhisperService {
     _amplitudePollTimer = null;
     _silenceTimer?.cancel();
     _silenceTimer = null;
+    _maxDurationTimer?.cancel();
+    _maxDurationTimer = null;
 
     final path = await _recorder.stop();
     if (path == null) return null;
@@ -111,6 +128,7 @@ class WhisperService {
   void dispose() {
     _amplitudePollTimer?.cancel();
     _silenceTimer?.cancel();
+    _maxDurationTimer?.cancel();
     _recorder.dispose();
   }
 }
