@@ -31,11 +31,15 @@ class TokenVaultService {
     final clientId = AppConstants.auth0ClientId;
     final redirectUri = Uri.encodeFull('http://localhost:$port/callback');
 
+    final auth0Scopes = 'openid profile email offline_access read:user_idp_tokens';
+    final connectionScopes = config['scopes'];
+
     return 'https://$domain/authorize'
         '?response_type=code'
         '&client_id=$clientId'
         '&redirect_uri=$redirectUri'
-        '&scope=${Uri.encodeComponent('openid profile email read:user_idp_tokens ${config['scopes']}')}'
+        '&scope=${Uri.encodeComponent(auth0Scopes)}'
+        '&connection_scope=${Uri.encodeComponent(connectionScopes!)}'
         '&connection=${config['connection']}'
         '&audience=${Uri.encodeComponent('https://$domain/api/v2/')}'
         '&prompt=consent'
