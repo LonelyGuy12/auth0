@@ -21,9 +21,9 @@ class ServiceConnection {
     return [
       ServiceConnection(
         type: ServiceType.google,
-        displayName: 'Google Calendar',
-        emoji: '📅',
-        description: 'Read & create calendar events',
+        displayName: 'Google Account',
+        emoji: '🇬',
+        description: 'Calendar, Gmail, Drive, Contacts, Docs & YouTube',
       ),
       ServiceConnection(
         type: ServiceType.github,
