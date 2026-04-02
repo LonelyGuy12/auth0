@@ -7,5 +7,5 @@ class AppConstants {
   static String get openRouterApiKey => dotenv.env['OPENROUTER_API_KEY'] ?? '';
   static String get groqApiKey => dotenv.env['GROQ_API_KEY'] ?? '';
   static String get defaultAiModel =>
-      dotenv.env['AI_MODEL'] ?? 'qwen/qwen3.6-plus-preview:free';
+      dotenv.env['AI_MODEL'] ?? 'openrouter/auto';
 }

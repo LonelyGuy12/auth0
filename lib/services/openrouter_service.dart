@@ -465,7 +465,7 @@ class OpenRouterService {
     final url = Uri.parse('https://openrouter.ai/api/v1/chat/completions');
 
     final body = <String, dynamic>{
-      'model': model,
+      'model': model.isEmpty ? 'openrouter/auto' : model,
       'messages': messages,
     };
 

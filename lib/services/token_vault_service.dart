@@ -217,21 +217,28 @@ class TokenVaultService {
 
       final tokens = jsonDecode(response.body) as Map<String, dynamic>;
 
-      // Try to fetch a fresh IdP token using the new Management API token
-      final mgmtToken = tokens['access_token'] as String?;
+      // Use client_credentials to get a real Management API token
+      // (the user's access_token lacks read:users permission)
       final userId = await _storage.read(key: '${service}_user_id');
-      if (mgmtToken != null && userId != null) {
-        final idpToken = await fetchIdpToken(service, mgmtToken, userId);
-        if (idpToken != null) {
-          tokens['idp_access_token'] = idpToken;
-          tokens['user_id'] = userId;
+      if (userId != null) {
+        final ccToken = await getManagementApiToken();
+        if (ccToken != null) {
+          final idpToken = await fetchIdpToken(service, ccToken, userId);
+          if (idpToken != null) {
+            tokens['idp_access_token'] = idpToken;
+            tokens['user_id'] = userId;
+            await storeTokens(service, tokens);
+            debugPrint('[TokenVault] Refreshed $service token successfully');
+            return idpToken;
+          }
         }
       }
 
-      await storeTokens(service, tokens);
-      return tokens['idp_access_token'] as String? ??
-          tokens['access_token'] as String?;
-    } catch (_) {
+      // Could not get IdP token — do NOT fall back to Auth0 mgmt token
+      debugPrint('[TokenVault] Could not refresh IdP token for $service');
+      return null;
+    } catch (e) {
+      debugPrint('[TokenVault] Refresh error for $service: $e');
       return null;
     }
   }
